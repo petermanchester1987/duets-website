@@ -1,4 +1,5 @@
-"use client"
+'use client'
+
 import React, { useState, useEffect, useRef } from 'react';
 import { Calendar, Music, Users, Star, Sparkles, Mail, Instagram, Facebook, Twitter, ChevronRight, Menu, X } from 'lucide-react';
 
@@ -10,13 +11,28 @@ const DuetsWebsite = () => {
   const [isTyping, setIsTyping] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [heroImageLoaded, setHeroImageLoaded] = useState(false);
+  
+  // Dynamic content from Sanity
+  const [heroImage, setHeroImage] = useState(null);
+  const [videos, setVideos] = useState([]);
+  const [blogs, setBlogs] = useState([]);
+  const [calendarEvents, setCalendarEvents] = useState([]);
+  const [testimonials, setTestimonials] = useState([]);
+  
   const canvasRef = useRef(null);
   
   // Replace with your actual hero image URL
-  const heroImageUrl = "https://d3160fehqwenxu.cloudfront.net/duetsShow.jpeg";
+  const defaultHeroImage = "https://d3160fehqwenxu.cloudfront.net/duetShow2.jpg";
   //const heroImageUrl = "https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=1920&q=80";
 
-  const quotes = [
+  // const features = [
+  //   { icon: Star, title: "West End Performers", desc: "World-class talent from London's finest stages" },
+  //   { icon: Music, title: "Vast Cruise Experience", desc: "Performed on the world's most prestigious cruise lines" },
+  //   { icon: Users, title: "Audience Interactivity", desc: "Engage with the show like never before" },
+  //   { icon: Sparkles, title: "Unforgettable Songs", desc: "From classic theatre to modern pop hits" }
+  // ];
+
+const quotes = [
     "Where voices unite, magic ignites",
     "Two voices, one unforgettable experience",
     "The power of harmony brought to life",
@@ -37,11 +53,36 @@ const DuetsWebsite = () => {
     { name: "Ponant", color: "#8B4513" }
   ];
 
-  const testimonials = [
-    { text: "An absolutely mesmerizing performance! The chemistry between the performers is electric.", author: "Sarah M.", role: "NCL Epic. Audience Member" },
-    { text: "The best entertainment at sea. Simply the best singers I have worked with aboard.”", author: "Alain M.", role: "Cruise Director" },
-    { text: "Professional, engaging, and utterly spectacular. A must-see show!", author: "Emma A.", role: "P&O Entertainment Director" }
-  ];
+  // Fetch data from Sanity
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [heroRes, videosRes, blogsRes, calendarRes, testimonialsRes] = await Promise.all([
+          fetch('/api/sanity?type=hero'),
+          fetch('/api/sanity?type=videos'),
+          fetch('/api/sanity?type=blogs'),
+          fetch('/api/sanity?type=calendar'),
+          fetch('/api/sanity?type=testimonials')
+        ]);
+
+        const heroData = await heroRes.json();
+        const videosData = await videosRes.json();
+        const blogsData = await blogsRes.json();
+        const calendarData = await calendarRes.json();
+        const testimonialsData = await testimonialsRes.json();
+
+        if (heroData && !heroData.error) setHeroImage(heroData);
+        if (videosData && !videosData.error) setVideos(videosData);
+        if (blogsData && !blogsData.error) setBlogs(blogsData);
+        if (calendarData && !calendarData.error) setCalendarEvents(calendarData);
+        if (testimonialsData && !testimonialsData.error) setTestimonials(testimonialsData);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   // Auto-typing effect
   useEffect(() => {
@@ -134,6 +175,15 @@ const DuetsWebsite = () => {
     };
   }, []);
 
+  // Format date helper
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric'
+    });
+  };
+
   return (
     <div className="bg-black text-white min-h-screen overflow-x-hidden relative" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
       {/* Animated Grid Background */}
@@ -220,8 +270,8 @@ const DuetsWebsite = () => {
         {/* Hero Background Image */}
         <div className="absolute inset-0 z-0">
           <img 
-            src={heroImageUrl}
-            alt="Duets Performance"
+            src={heroImage?.imageUrl || defaultHeroImage}
+            alt={heroImage?.alt || "Duets Performance"}
             className={`w-full h-full object-cover transition-opacity duration-1000 ${heroImageLoaded ? 'opacity-100' : 'opacity-0'}`}
             onLoad={() => setHeroImageLoaded(true)}
           />
@@ -250,13 +300,15 @@ const DuetsWebsite = () => {
             to contemporary pop sensations, witness two extraordinary voices unite in perfect harmony.
           </p>
 
-          <button className="group relative px-12 py-5 bg-gradient-to-r from-cyan-500 to-fuchsia-500 rounded-full text-xl font-semibold overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-cyan-500/50">
-            <span className="relative z-10 flex items-center justify-center gap-2">
-              Get in Touch
-              <ChevronRight className="group-hover:translate-x-1 transition-transform" />
-            </span>
-            <div className="absolute inset-0 bg-gradient-to-r from-fuchsia-500 to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity" />
-          </button>
+          <a href="#contact">
+            <button className="group relative px-12 py-5 bg-gradient-to-r from-cyan-500 to-fuchsia-500 rounded-full text-xl font-semibold overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-cyan-500/50">
+              <span className="relative z-10 flex items-center justify-center gap-2">
+                Get in Touch
+                <ChevronRight className="group-hover:translate-x-1 transition-transform" />
+              </span>
+              <div className="absolute inset-0 bg-gradient-to-r from-fuchsia-500 to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+            </button>
+          </a>
         </div>
 
         {/* Parallax Elements */}
@@ -275,60 +327,35 @@ const DuetsWebsite = () => {
       </section>
 
       {/* Video Showcase Section */}
-      <section className="relative py-32 px-6 bg-gradient-to-b from-black to-gray-900 z-10">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-5xl md:text-6xl font-bold text-center mb-12 bg-gradient-to-r from-cyan-400 to-fuchsia-500 bg-clip-text text-transparent">
-            Watch Us Perform
-          </h2>
-          <p className="text-center text-gray-400 mb-20 text-xl">Experience the magic of our performances</p>
-          
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Video 1 */}
-            <div className="group relative aspect-video bg-gray-900 rounded-2xl overflow-hidden border border-cyan-500/20 hover:border-cyan-500/50 transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-cyan-500/20">
-              <iframe
-                className="w-full h-full"
-                src="https://www.youtube.com/embed/bXolxgGhb_A"
-                title="Performance Video 1"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              ></iframe>
+      {videos.length > 0 && (
+        <section className="relative py-32 px-6 bg-gradient-to-b from-black to-gray-900 z-10">
+          <div className="max-w-7xl mx-auto">
+            <h2 className="text-5xl md:text-6xl font-bold text-center mb-12 bg-gradient-to-r from-cyan-400 to-fuchsia-500 bg-clip-text text-transparent">
+              Watch Us Perform
+            </h2>
+            <p className="text-center text-gray-400 mb-20 text-xl">Experience the magic of our performances</p>
+            
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {videos.map((video) => (
+                <div key={video._id} className="group relative aspect-video bg-gray-900 rounded-2xl overflow-hidden border border-cyan-500/20 hover:border-cyan-500/50 transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-cyan-500/20">
+                  <iframe
+                    className="w-full h-full"
+                    src={`https://www.youtube.com/embed/${video.youtubeId}`}
+                    title={video.title}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  ></iframe>
+                  {video.description && (
+                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <p className="text-sm text-gray-300">{video.description}</p>
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
-
-            {/* Video 2 */}
-            {/* <div className="group relative aspect-video bg-gray-900 rounded-2xl overflow-hidden border border-cyan-500/20 hover:border-cyan-500/50 transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-fuchsia-500/20">
-              <iframe
-                className="w-full h-full"
-                src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-                title="Performance Video 2"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              ></iframe>
-            </div> */}
-
-            {/* Video 3 */}
-            {/* <div className="group relative aspect-video bg-gray-900 rounded-2xl overflow-hidden border border-cyan-500/20 hover:border-cyan-500/50 transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-cyan-500/20">
-              <iframe
-                className="w-full h-full"
-                src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-                title="Performance Video 3"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              ></iframe>
-            </div> */}
-
-            {/* Video 4 */}
-            {/* <div className="group relative aspect-video bg-gray-900 rounded-2xl overflow-hidden border border-cyan-500/20 hover:border-cyan-500/50 transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-fuchsia-500/20">
-              <iframe
-                className="w-full h-full"
-                src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-                title="Performance Video 4"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              ></iframe>
-            </div> */}
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Features Section */}
       <section id="features" className="relative py-32 px-6 z-10">
@@ -384,32 +411,34 @@ const DuetsWebsite = () => {
       </section>
 
       {/* Testimonials Section */}
-      <section className="relative py-32 px-6 z-10">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-5xl md:text-6xl font-bold text-center mb-20 bg-gradient-to-r from-cyan-400 to-fuchsia-500 bg-clip-text text-transparent">
-            What People Say
-          </h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, idx) => (
-              <div 
-                key={idx}
-                className="relative p-8 bg-gradient-to-br from-gray-900/80 to-black/80 backdrop-blur-sm border border-cyan-500/20 rounded-2xl hover:border-cyan-500/50 transition-all duration-300 hover:scale-105"
-                style={{
-                  transform: `translateY(${idx * 20}px)`
-                }}
-              >
-                <div className="text-cyan-400 text-5xl mb-4">"</div>
-                <p className="text-gray-300 mb-6 italic">{testimonial.text}</p>
-                <div className="border-t border-cyan-500/20 pt-4">
-                  <p className="font-semibold text-white">{testimonial.author}</p>
-                  <p className="text-sm text-gray-500">{testimonial.role}</p>
+      {testimonials.length > 0 && (
+        <section className="relative py-32 px-6 z-10">
+          <div className="max-w-7xl mx-auto">
+            <h2 className="text-5xl md:text-6xl font-bold text-center mb-20 bg-gradient-to-r from-cyan-400 to-fuchsia-500 bg-clip-text text-transparent">
+              What People Say
+            </h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {testimonials.slice(0, 3).map((testimonial, idx) => (
+                <div 
+                  key={testimonial._id}
+                  className="relative p-8 bg-gradient-to-br from-gray-900/80 to-black/80 backdrop-blur-sm border border-cyan-500/20 rounded-2xl hover:border-cyan-500/50 transition-all duration-300 hover:scale-105"
+                  style={{
+                    transform: `translateY(${idx * 20}px)`
+                  }}
+                >
+                  <div className="text-cyan-400 text-5xl mb-4">"</div>
+                  <p className="text-gray-300 mb-6 italic">{testimonial.text}</p>
+                  <div className="border-t border-cyan-500/20 pt-4">
+                    <p className="font-semibold text-white">{testimonial.author}</p>
+                    <p className="text-sm text-gray-500">{testimonial.role}</p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Blog Preview Section */}
       <section id="blog" className="relative py-32 px-6 bg-gradient-to-b from-black to-gray-900 z-10">
@@ -420,18 +449,37 @@ const DuetsWebsite = () => {
           <p className="text-center text-gray-400 mb-20 text-xl">Stay updated with our performances and behind-the-scenes stories</p>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-            {[1, 2, 3].map((item) => (
-              <div key={item} className="group relative bg-gray-900/50 border border-cyan-500/20 rounded-2xl overflow-hidden hover:border-cyan-500/50 transition-all duration-300 hover:scale-105 cursor-pointer">
-                <div className="aspect-video bg-gradient-to-br from-cyan-500/20 to-fuchsia-500/20 flex items-center justify-center">
-                  <Music className="w-16 h-16 text-cyan-400 opacity-50" />
-                </div>
+            {blogs.length > 0 ? blogs.map((blog) => (
+              <a key={blog._id} href={`/blog/${blog.slug.current}`} className="group relative bg-gray-900/50 border border-cyan-500/20 rounded-2xl overflow-hidden hover:border-cyan-500/50 transition-all duration-300 hover:scale-105 cursor-pointer">
+                {blog.imageUrl ? (
+                  <div className="aspect-video overflow-hidden">
+                    <img src={blog.imageUrl} alt={blog.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
+                  </div>
+                ) : (
+                  <div className="aspect-video bg-gradient-to-br from-cyan-500/20 to-fuchsia-500/20 flex items-center justify-center">
+                    <Music className="w-16 h-16 text-cyan-400 opacity-50" />
+                  </div>
+                )}
                 <div className="p-6">
-                  <p className="text-sm text-cyan-400 mb-2">Coming Soon</p>
-                  <h3 className="text-xl font-bold mb-3 group-hover:text-cyan-400 transition-colors">Blog Post Title</h3>
-                  <p className="text-gray-400 text-sm">Exciting content will be added here soon. Stay tuned for updates!</p>
+                  <p className="text-sm text-cyan-400 mb-2">{formatDate(blog.publishedAt)}</p>
+                  <h3 className="text-xl font-bold mb-3 group-hover:text-cyan-400 transition-colors">{blog.title}</h3>
+                  <p className="text-gray-400 text-sm">{blog.excerpt}</p>
                 </div>
-              </div>
-            ))}
+              </a>
+            )) : (
+              [1, 2, 3].map((item) => (
+                <div key={item} className="group relative bg-gray-900/50 border border-cyan-500/20 rounded-2xl overflow-hidden hover:border-cyan-500/50 transition-all duration-300 hover:scale-105 cursor-pointer">
+                  <div className="aspect-video bg-gradient-to-br from-cyan-500/20 to-fuchsia-500/20 flex items-center justify-center">
+                    <Music className="w-16 h-16 text-cyan-400 opacity-50" />
+                  </div>
+                  <div className="p-6">
+                    <p className="text-sm text-cyan-400 mb-2">Coming Soon</p>
+                    <h3 className="text-xl font-bold mb-3 group-hover:text-cyan-400 transition-colors">Blog Post Title</h3>
+                    <p className="text-gray-400 text-sm">Exciting content will be added here soon. Stay tuned for updates!</p>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </div>
       </section>
@@ -445,100 +493,195 @@ const DuetsWebsite = () => {
           <p className="text-center text-gray-400 mb-20 text-xl">Find us performing at a venue near you</p>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {['January', 'February', 'March', 'April', 'May', 'June'].map((month) => (
-              <div key={month} className="group relative p-8 bg-gradient-to-br from-gray-900/80 to-black/80 border border-cyan-500/20 rounded-2xl hover:border-cyan-500/50 transition-all duration-300 hover:scale-105 cursor-pointer">
-                <Calendar className="w-12 h-12 text-cyan-400 mb-4 group-hover:text-fuchsia-400 transition-colors" />
-                <h3 className="text-2xl font-bold mb-4">{month} 2025</h3>
-                <p className="text-gray-400">Schedule coming soon</p>
-                <div className="mt-4 flex items-center text-cyan-400 text-sm">
-                  View Details <ChevronRight className="w-4 h-4 ml-1" />
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+            {calendarEvents.length > 0 ? calendarEvents.map((event) => (
+              <div key={event._id} className="group relative p-8 bg-gradient-to-br from-gray-900/80 to-black/80 border border-cyan-500/20 rounded-2xl hover:border-cyan-500/50 transition-all duration-300 hover:scale-105 cursor-pointer">
+<Calendar className="w-12 h-12 text-cyan-400 mb-4 group-hover:text-fuchsia-400 transition-colors" />
+<h3 className="text-2xl font-bold mb-2">{event.title}</h3>
+<p className="text-cyan-400 mb-2">{formatDate(event.date)}</p>
+{event.venue && <p className="text-gray-300 mb-1">{event.venue}</p>}
+{event.location && <p className="text-gray-400 text-sm mb-3">{event.location}</p>}
+{event.description && <p className="text-gray-400 text-sm mb-4">{event.description}</p>}
+{event.ticketLink && (
+<a 
+                 href={event.ticketLink} 
+                 target="_blank" 
+                 rel="noopener noreferrer"
+                 className="inline-flex items-center text-cyan-400 text-sm hover:text-fuchsia-400 transition-colors"
+               >
+Get Tickets <ChevronRight className="w-4 h-4 ml-1" />
+</a>
+)}
+</div>
+)) : (
+['January', 'February', 'March', 'April', 'May', 'June'].map((month) => (
+<div key={month} className="group relative p-8 bg-gradient-to-br from-gray-900/80 to-black/80 border border-cyan-500/20 rounded-2xl hover:border-cyan-500/50 transition-all duration-300 hover:scale-105 cursor-pointer">
+<Calendar className="w-12 h-12 text-cyan-400 mb-4 group-hover:text-fuchsia-400 transition-colors" />
+<h3 className="text-2xl font-bold mb-4">{month} 2025</h3>
+<p className="text-gray-400">Schedule coming soon</p>
+<div className="mt-4 flex items-center text-cyan-400 text-sm">
+View Details <ChevronRight className="w-4 h-4 ml-1" />
+</div>
+</div>
+))
+)}
+</div>
+</div>
+</section>
+  {/* Contact Section */}
+  <section id="contact" className="relative py-32 px-6 bg-gradient-to-b from-gray-900 to-black z-10">
+    <div className="max-w-4xl mx-auto">
+      <h2 className="text-5xl md:text-6xl font-bold text-center mb-12 bg-gradient-to-r from-cyan-400 to-fuchsia-500 bg-clip-text text-transparent">
+        Get in Touch
+      </h2>
+      <p className="text-center text-gray-400 mb-20 text-xl">Interested in booking us? Let's create magic together</p>
+      
+      <ContactForm />
 
-      {/* Contact Section */}
-      <section id="contact" className="relative py-32 px-6 bg-gradient-to-b from-gray-900 to-black z-10">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-5xl md:text-6xl font-bold text-center mb-12 bg-gradient-to-r from-cyan-400 to-fuchsia-500 bg-clip-text text-transparent">
-            Get in Touch
-          </h2>
-          <p className="text-center text-gray-400 mb-20 text-xl">Interested in booking us? Let's make music together</p>
-          
-          <div className="relative p-8 md:p-12 bg-gradient-to-br from-gray-900/80 to-black/80 backdrop-blur-sm border border-cyan-500/30 rounded-3xl">
-            <div className="space-y-6">
-              <div>
-                <input 
-                  type="text" 
-                  placeholder="Your Name"
-                  className="w-full px-6 py-4 bg-black/50 border border-cyan-500/30 rounded-xl focus:border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 transition-all text-white placeholder-gray-500"
-                />
-              </div>
-              <div>
-                <input 
-                  type="email" 
-                  placeholder="Your Email"
-                  className="w-full px-6 py-4 bg-black/50 border border-cyan-500/30 rounded-xl focus:border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 transition-all text-white placeholder-gray-500"
-                />
-              </div>
-              <div>
-                <textarea 
-                  rows="5"
-                  placeholder="Your Message"
-                  className="w-full px-6 py-4 bg-black/50 border border-cyan-500/30 rounded-xl focus:border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 transition-all text-white placeholder-gray-500 resize-none"
-                />
-              </div>
-              <button className="w-full py-5 bg-gradient-to-r from-cyan-500 to-fuchsia-500 rounded-xl font-semibold hover:scale-105 transition-all duration-300 hover:shadow-2xl hover:shadow-cyan-500/50 flex items-center justify-center gap-2">
-                <Mail className="w-5 h-5" />
-                Send Message
-              </button>
-            </div>
-
-            <div className="mt-12 pt-8 border-t border-cyan-500/20">
-              <p className="text-center text-gray-400 mb-6">Follow us on social media</p>
-              <div className="flex justify-center gap-6">
-                {[
-                  { Icon: Instagram, color: '#E1306C' },
-                  { Icon: Facebook, color: '#1877F2' },
-                  { Icon: Twitter, color: '#1DA1F2' }
-                ].map(({ Icon, color }, idx) => (
-                  <a 
-                    key={idx}
-                    href="#"
-                    className="group relative w-14 h-14 flex items-center justify-center bg-gray-900/50 border border-cyan-500/20 rounded-full hover:border-cyan-500/50 transition-all duration-300 hover:scale-110"
-                    style={{
-                      boxShadow: `0 0 0 ${color}00`
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.boxShadow = `0 0 20px ${color}60`;
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.boxShadow = `0 0 0 ${color}00`;
-                    }}
-                  >
-                    <Icon className="w-6 h-6 text-gray-400 group-hover:text-white transition-colors" />
-                  </a>
-                ))}
-              </div>
-            </div>
-          </div>
+      <div className="mt-12 pt-8 border-t border-cyan-500/20">
+        <p className="text-center text-gray-400 mb-6">Follow us on social media</p>
+        <div className="flex justify-center gap-6">
+          {[
+            { Icon: Instagram, color: '#E1306C' },
+            { Icon: Facebook, color: '#1877F2' },
+            { Icon: Twitter, color: '#1DA1F2' }
+          ].map(({ Icon, color }, idx) => (
+            <a 
+              key={idx}
+              href="#"
+              className="group relative w-14 h-14 flex items-center justify-center bg-gray-900/50 border border-cyan-500/20 rounded-full hover:border-cyan-500/50 transition-all duration-300 hover:scale-110"
+              style={{
+                boxShadow: `0 0 0 ${color}00`
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.boxShadow = `0 0 20px ${color}60`;
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.boxShadow = `0 0 0 ${color}00`;
+              }}
+            >
+              <Icon className="w-6 h-6 text-gray-400 group-hover:text-white transition-colors" />
+            </a>
+          ))}
         </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="relative py-12 px-6 border-t border-cyan-500/20 z-10">
-        <div className="max-w-7xl mx-auto text-center">
-          <div className="text-3xl font-bold mb-4 bg-gradient-to-r from-cyan-400 to-fuchsia-500 bg-clip-text text-transparent">
-            DUETS
-          </div>
-          <p className="text-gray-500 mb-4">© 2025 Duets. All rights reserved.</p>
-          <p className="text-gray-600 text-sm">Bringing musical magic to stages and seas worldwide</p>
-        </div>
-      </footer>
+      </div>
     </div>
-  );
-};
+  </section>
 
+  {/* Footer */}
+  <footer className="relative py-12 px-6 border-t border-cyan-500/20 z-10">
+    <div className="max-w-7xl mx-auto text-center">
+      <div className="text-3xl font-bold mb-4 bg-gradient-to-r from-cyan-400 to-fuchsia-500 bg-clip-text text-transparent">
+        DUETS
+      </div>
+      <p className="text-gray-500 mb-4">© 2025 Duets. All rights reserved.</p>
+      <p className="text-gray-600 text-sm">Bringing musical magic to stages and seas worldwide</p>
+    </div>
+  </footer>
+</div>
+);
+};
+// Contact Form Component with Email Integration
+const ContactForm = () => {
+const [formData, setFormData] = useState({
+name: '',
+email: '',
+message: ''
+});
+const [status, setStatus] = useState({ type: '', message: '' });
+const [isSubmitting, setIsSubmitting] = useState(false);
+const handleChange = (e) => {
+setFormData({
+...formData,
+[e.target.name]: e.target.value
+});
+};
+const handleSubmit = async (e) => {
+e.preventDefault();
+setIsSubmitting(true);
+setStatus({ type: '', message: '' });
+try {
+  const response = await fetch('/api/contact', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(formData),
+  });
+
+  const data = await response.json();
+
+  if (response.ok) {
+    setStatus({ 
+      type: 'success', 
+      message: 'Thank you! Your message has been sent successfully.' 
+    });
+    setFormData({ name: '', email: '', message: '' });
+  } else {
+    setStatus({ 
+      type: 'error', 
+      message: data.error || 'Something went wrong. Please try again.' 
+    });
+  }
+} catch (error) {
+  setStatus({ 
+    type: 'error', 
+    message: 'Failed to send message. Please try again later.' 
+  });
+} finally {
+  setIsSubmitting(false);
+}
+};
+return (
+<div className="relative p-8 md:p-12 bg-gradient-to-br from-gray-900/80 to-black/80 backdrop-blur-sm border border-cyan-500/30 rounded-3xl">
+<div className="space-y-6">
+{status.message && (
+<div className={`p-4 rounded-lg ${status.type === 'success' ? 'bg-green-500/20 border border-green-500/50 text-green-300':'bg-red-500/20 border border-red-500/50 text-red-300'}`}>
+{status.message}
+</div>
+)}
+    <div>
+      <input 
+        type="text"
+        name="name"
+        value={formData.name}
+        onChange={handleChange}
+        placeholder="Your Name"
+        required
+        className="w-full px-6 py-4 bg-black/50 border border-cyan-500/30 rounded-xl focus:border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 transition-all text-white placeholder-gray-500"
+      />
+    </div>
+    <div>
+      <input 
+        type="email"
+        name="email"
+        value={formData.email}
+        onChange={handleChange}
+        placeholder="Your Email"
+        required
+        className="w-full px-6 py-4 bg-black/50 border border-cyan-500/30 rounded-xl focus:border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 transition-all text-white placeholder-gray-500"
+      />
+    </div>
+    <div>
+      <textarea 
+        name="message"
+        value={formData.message}
+        onChange={handleChange}
+        rows="5"
+        placeholder="Your Message"
+        required
+        className="w-full px-6 py-4 bg-black/50 border border-cyan-500/30 rounded-xl focus:border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 transition-all text-white placeholder-gray-500 resize-none"
+      />
+    </div>
+    <button 
+      onClick={handleSubmit}
+      disabled={isSubmitting}
+      className="w-full py-5 bg-gradient-to-r from-cyan-500 to-fuchsia-500 rounded-xl font-semibold hover:scale-105 transition-all duration-300 hover:shadow-2xl hover:shadow-cyan-500/50 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+    >
+      <Mail className="w-5 h-5" />
+      {isSubmitting ? 'Sending...' : 'Send Message'}
+    </button>
+  </div>
+</div>
+);
+};
 export default DuetsWebsite;

@@ -7,12 +7,21 @@ export default {
       name: 'image',
       title: 'Hero Background Image',
       type: 'image',
-      options: { hotspot: true }
+      options: { hotspot: true },
+      validation: Rule => Rule.required()
     },
     {
       name: 'alt',
       title: 'Alt Text',
-      type: 'string'
+      type: 'string',
+      validation: Rule => Rule.required()
+    },
+    {
+      name: 'isActive',
+      title: 'Active',
+      type: 'boolean',
+      description: 'Only one hero image should be active at a time',
+      initialValue: true
     }
   ]
 }
