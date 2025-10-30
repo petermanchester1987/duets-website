@@ -38,9 +38,9 @@ const DuetsWebsite = () => {
   ];
 
   const testimonials = [
-    { text: "An absolutely mesmerizing performance! The chemistry between the performers is electric.", author: "Sarah M.", role: "Audience Member" },
-    { text: "The best entertainment at sea. We were completely captivated from start to finish.", author: "James T.", role: "Cruise Guest" },
-    { text: "Professional, engaging, and utterly spectacular. A must-see show!", author: "Emma R.", role: "Entertainment Director" }
+    { text: "An absolutely mesmerizing performance! The chemistry between the performers is electric.", author: "Sarah M.", role: "NCL Epic. Audience Member" },
+    { text: "The best entertainment at sea. Simply the best singers I have worked with aboard.”", author: "Alain M.", role: "Cruise Director" },
+    { text: "Professional, engaging, and utterly spectacular. A must-see show!", author: "Emma A.", role: "P&O Entertainment Director" }
   ];
 
   // Auto-typing effect
@@ -465,7 +465,7 @@ const DuetsWebsite = () => {
           <h2 className="text-5xl md:text-6xl font-bold text-center mb-12 bg-gradient-to-r from-cyan-400 to-fuchsia-500 bg-clip-text text-transparent">
             Get in Touch
           </h2>
-          <p className="text-center text-gray-400 mb-20 text-xl">Interested in booking us? Let's create magic together</p>
+          <p className="text-center text-gray-400 mb-20 text-xl">Interested in booking us? Let's make music together</p>
           
           <div className="relative p-8 md:p-12 bg-gradient-to-br from-gray-900/80 to-black/80 backdrop-blur-sm border border-cyan-500/30 rounded-3xl">
             <div className="space-y-6">
