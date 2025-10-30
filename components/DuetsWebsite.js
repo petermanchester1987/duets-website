@@ -13,7 +13,8 @@ const DuetsWebsite = () => {
   const canvasRef = useRef(null);
   
   // Replace with your actual hero image URL
-  const heroImageUrl = "https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=1920&q=80";
+  const heroImageUrl = "https://d3160fehqwenxu.cloudfront.net/duetsShow.jpeg";
+  //const heroImageUrl = "https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=1920&q=80";
 
   const quotes = [
     "Where voices unite, magic ignites",
