@@ -340,7 +340,7 @@ const quotes = [
                 <div key={video._id} className="group relative aspect-video bg-gray-900 rounded-2xl overflow-hidden border border-cyan-500/20 hover:border-cyan-500/50 transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-cyan-500/20">
                   <iframe
                     className="w-full h-full"
-                    src={`https://www.youtube.com/embed/${video.youtubeId}`}
+                    src={`https://www.youtube.com/embed/${video.youtubeId ? video.youtubeId : 'bXolxgGhb_A'}`}
                     title={video.title}
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
