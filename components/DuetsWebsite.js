@@ -296,8 +296,8 @@ const quotes = [
           </div>
 
           <p className="text-lg md:text-xl text-gray-200 mb-12 max-w-3xl mx-auto leading-relaxed drop-shadow-lg">
-            Experience the magic of musical theatre's most iconic partnerships. From Broadway classics 
-            to contemporary pop sensations, witness two extraordinary voices unite in perfect harmony.
+            Experience the magic of music's most iconic partnerships. From Broadway 
+            to Pop, witness two extraordinary voices unite in perfect harmony.
           </p>
 
           <a href="#contact">
