@@ -1,9 +1,12 @@
 export default function robots() {
   return {
-    rules: {
-      userAgent: '*',
-      allow: '/',
-    },
-    sitemap: 'https://your-domain.vercel.app/sitemap.xml',
+    rules: [
+      {
+        userAgent: '*',
+        allow: '/',
+        disallow: ['/studio/', '/api/'],
+      },
+    ],
+    sitemap: 'duets.the-manchesters.com/sitemap.xml', // Update with your domain
   }
 }

@@ -3,7 +3,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Calendar, Music, Users, Star, Sparkles, Mail, Instagram, Facebook, Twitter, ChevronRight, Menu, X } from 'lucide-react';
 
-const DuetsWebsite = () => {
+const DuetsWebsite = ({ 
+  heroImage: initialHeroImage, 
+  videos: initialVideos, 
+  blogs: initialBlogs, 
+  calendarEvents: initialCalendarEvents, 
+  testimonials: initialTestimonials 
+}) => {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [particles, setParticles] = useState([]);
   const [currentQuote, setCurrentQuote] = useState(0);
@@ -12,12 +18,12 @@ const DuetsWebsite = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [heroImageLoaded, setHeroImageLoaded] = useState(false);
   
-  // Dynamic content from Sanity
-  const [heroImage, setHeroImage] = useState(null);
-  const [videos, setVideos] = useState([]);
-  const [blogs, setBlogs] = useState([]);
-  const [calendarEvents, setCalendarEvents] = useState([]);
-  const [testimonials, setTestimonials] = useState([]);
+  // Use props instead of state for content
+  const heroImage = initialHeroImage;
+  const videos = initialVideos || [];
+  const blogs = initialBlogs || [];
+  const calendarEvents = initialCalendarEvents || [];
+  const testimonials = initialTestimonials || [];
   
   const canvasRef = useRef(null);
   
@@ -58,42 +64,42 @@ const quotes = [
   ];
 
 // Fetch data from Sanity
-useEffect(() => {
-  const fetchData = async () => {
-    try {
-      const [heroRes, videosRes, blogsRes, calendarRes, testimonialsRes] = await Promise.all([
-        fetch('/api/sanity?type=hero'),
-        fetch('/api/sanity?type=videos'),
-        fetch('/api/sanity?type=blogs'),
-        fetch('/api/sanity?type=calendar'),
-        fetch('/api/sanity?type=testimonials')
-      ]);
+// useEffect(() => {
+//   const fetchData = async () => {
+//     try {
+//       const [heroRes, videosRes, blogsRes, calendarRes, testimonialsRes] = await Promise.all([
+//         fetch('/api/sanity?type=hero'),
+//         fetch('/api/sanity?type=videos'),
+//         fetch('/api/sanity?type=blogs'),
+//         fetch('/api/sanity?type=calendar'),
+//         fetch('/api/sanity?type=testimonials')
+//       ]);
 
-      // Check if responses are ok
-      if (!heroRes.ok) console.error('Hero fetch failed:', await heroRes.text());
-      if (!videosRes.ok) console.error('Videos fetch failed:', await videosRes.text());
-      if (!blogsRes.ok) console.error('Blogs fetch failed:', await blogsRes.text());
-      if (!calendarRes.ok) console.error('Calendar fetch failed:', await calendarRes.text());
-      if (!testimonialsRes.ok) console.error('Testimonials fetch failed:', await testimonialsRes.text());
+//       // Check if responses are ok
+//       if (!heroRes.ok) console.error('Hero fetch failed:', await heroRes.text());
+//       if (!videosRes.ok) console.error('Videos fetch failed:', await videosRes.text());
+//       if (!blogsRes.ok) console.error('Blogs fetch failed:', await blogsRes.text());
+//       if (!calendarRes.ok) console.error('Calendar fetch failed:', await calendarRes.text());
+//       if (!testimonialsRes.ok) console.error('Testimonials fetch failed:', await testimonialsRes.text());
 
-      const heroData = heroRes.ok ? await heroRes.json() : null;
-      const videosData = videosRes.ok ? await videosRes.json() : [];
-      const blogsData = blogsRes.ok ? await blogsRes.json() : [];
-      const calendarData = calendarRes.ok ? await calendarRes.json() : [];
-      const testimonialsData = testimonialsRes.ok ? await testimonialsRes.json() : [];
+//       const heroData = heroRes.ok ? await heroRes.json() : null;
+//       const videosData = videosRes.ok ? await videosRes.json() : [];
+//       const blogsData = blogsRes.ok ? await blogsRes.json() : [];
+//       const calendarData = calendarRes.ok ? await calendarRes.json() : [];
+//       const testimonialsData = testimonialsRes.ok ? await testimonialsRes.json() : [];
 
-      if (heroData && !heroData.error) setHeroImage(heroData);
-      if (videosData && !videosData.error) setVideos(videosData);
-      if (blogsData && !blogsData.error) setBlogs(blogsData);
-      if (calendarData && !calendarData.error) setCalendarEvents(calendarData);
-      if (testimonialsData && !testimonialsData.error) setTestimonials(testimonialsData);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
+//       if (heroData && !heroData.error) setHeroImage(heroData);
+//       if (videosData && !videosData.error) setVideos(videosData);
+//       if (blogsData && !blogsData.error) setBlogs(blogsData);
+//       if (calendarData && !calendarData.error) setCalendarEvents(calendarData);
+//       if (testimonialsData && !testimonialsData.error) setTestimonials(testimonialsData);
+//     } catch (error) {
+//       console.error('Error fetching data:', error);
+//     }
+//   };
 
-  fetchData();
-}, []);
+//   fetchData();
+// }, []);
 
   // Auto-typing effect
   useEffect(() => {
@@ -395,9 +401,9 @@ useEffect(() => {
       <section id="shows" className="relative py-32 px-6 bg-gradient-to-b from-black to-gray-900 z-10">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-5xl md:text-6xl font-bold text-center mb-12 bg-gradient-to-r from-cyan-400 to-fuchsia-500 bg-clip-text text-transparent">
-            Performed On/In
+            Performed On or In
           </h2>
-          <p className="text-center text-gray-400 mb-20 text-xl">World-class entertainment on prestigious cruise lines</p>
+          <p className="text-center text-gray-400 mb-20 text-xl">World-class entertainment on prestigious cruise lines and in theatres</p>
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {cruiseLines.map((line, idx) => (
