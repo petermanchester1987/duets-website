@@ -50,39 +50,50 @@ const quotes = [
     { name: "P&O", color: "#00205B" },
     { name: "NCL", color: "#003DA5" },
     { name: "Windstar", color: "#1B4D89" },
-    { name: "Ponant", color: "#8B4513" }
+    { name: "Ponant", color: "#8B4513" },
+    { name: "Royal Albert Hall", color: "#00205B" },
+    { name: "London Coliseum", color: "#003DA5" },
+    { name: "London o2 Arena", color: "#1B4D89" },
+    { name: "The North Pole", color: "#8B4513" }
   ];
 
-  // Fetch data from Sanity
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [heroRes, videosRes, blogsRes, calendarRes, testimonialsRes] = await Promise.all([
-          fetch('/api/sanity?type=hero'),
-          fetch('/api/sanity?type=videos'),
-          fetch('/api/sanity?type=blogs'),
-          fetch('/api/sanity?type=calendar'),
-          fetch('/api/sanity?type=testimonials')
-        ]);
+// Fetch data from Sanity
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const [heroRes, videosRes, blogsRes, calendarRes, testimonialsRes] = await Promise.all([
+        fetch('/api/sanity?type=hero'),
+        fetch('/api/sanity?type=videos'),
+        fetch('/api/sanity?type=blogs'),
+        fetch('/api/sanity?type=calendar'),
+        fetch('/api/sanity?type=testimonials')
+      ]);
 
-        const heroData = await heroRes.json();
-        const videosData = await videosRes.json();
-        const blogsData = await blogsRes.json();
-        const calendarData = await calendarRes.json();
-        const testimonialsData = await testimonialsRes.json();
+      // Check if responses are ok
+      if (!heroRes.ok) console.error('Hero fetch failed:', await heroRes.text());
+      if (!videosRes.ok) console.error('Videos fetch failed:', await videosRes.text());
+      if (!blogsRes.ok) console.error('Blogs fetch failed:', await blogsRes.text());
+      if (!calendarRes.ok) console.error('Calendar fetch failed:', await calendarRes.text());
+      if (!testimonialsRes.ok) console.error('Testimonials fetch failed:', await testimonialsRes.text());
 
-        if (heroData && !heroData.error) setHeroImage(heroData);
-        if (videosData && !videosData.error) setVideos(videosData);
-        if (blogsData && !blogsData.error) setBlogs(blogsData);
-        if (calendarData && !calendarData.error) setCalendarEvents(calendarData);
-        if (testimonialsData && !testimonialsData.error) setTestimonials(testimonialsData);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
+      const heroData = heroRes.ok ? await heroRes.json() : null;
+      const videosData = videosRes.ok ? await videosRes.json() : [];
+      const blogsData = blogsRes.ok ? await blogsRes.json() : [];
+      const calendarData = calendarRes.ok ? await calendarRes.json() : [];
+      const testimonialsData = testimonialsRes.ok ? await testimonialsRes.json() : [];
 
-    fetchData();
-  }, []);
+      if (heroData && !heroData.error) setHeroImage(heroData);
+      if (videosData && !videosData.error) setVideos(videosData);
+      if (blogsData && !blogsData.error) setBlogs(blogsData);
+      if (calendarData && !calendarData.error) setCalendarEvents(calendarData);
+      if (testimonialsData && !testimonialsData.error) setTestimonials(testimonialsData);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  fetchData();
+}, []);
 
   // Auto-typing effect
   useEffect(() => {
@@ -297,7 +308,7 @@ const quotes = [
 
           <p className="text-lg md:text-xl text-gray-200 mb-12 max-w-3xl mx-auto leading-relaxed drop-shadow-lg">
             Experience the magic of music's most iconic partnerships. From Broadway 
-            to Pop, witness two extraordinary voices unite in perfect harmony.
+            to Pop, witness two extraordinary voices unite in perfect harmony. Two West End performers bring you an unforgettable show filled with passion, energy, and timeless hits.
           </p>
 
           <a href="#contact">
@@ -384,7 +395,7 @@ const quotes = [
       <section id="shows" className="relative py-32 px-6 bg-gradient-to-b from-black to-gray-900 z-10">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-5xl md:text-6xl font-bold text-center mb-12 bg-gradient-to-r from-cyan-400 to-fuchsia-500 bg-clip-text text-transparent">
-            Performed On
+            Performed On/In
           </h2>
           <p className="text-center text-gray-400 mb-20 text-xl">World-class entertainment on prestigious cruise lines</p>
           
