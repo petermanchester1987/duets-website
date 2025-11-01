@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect, useRef } from 'react';
+import Image from 'next/image'
 import { Calendar, Music, Users, Star, Sparkles, Mail, Instagram, Facebook, Twitter, ChevronRight, Menu, X } from 'lucide-react';
 
 const DuetsWebsite = ({ 
@@ -16,7 +17,6 @@ const DuetsWebsite = ({
   const [displayedText, setDisplayedText] = useState('');
   const [isTyping, setIsTyping] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [heroImageLoaded, setHeroImageLoaded] = useState(false);
   
   // Use props instead of state for content
   const heroImage = initialHeroImage;
@@ -28,7 +28,7 @@ const DuetsWebsite = ({
   const canvasRef = useRef(null);
   
   // Replace with your actual hero image URL
-  //const defaultHeroImage = "https://d3160fehqwenxu.cloudfront.net/duetShow2.jpg";
+  const fallbackHeroImage = "https://d3160fehqwenxu.cloudfront.net/duetShow2.jpg";
   //const heroImageUrl = "https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=1920&q=80";
 
   // const features = [
@@ -284,18 +284,21 @@ const quotes = [
 
       {/* Hero Section */}
       <section id="home" className="relative min-h-screen flex items-center justify-center pt-20 px-6 overflow-hidden">
-        {/* Hero Background Image */}
-        <div className="absolute inset-0 z-0">
-          <img 
-            src={heroImage?.imageUrl}
-            alt={heroImage?.alt || "Duets Performance"}
-            className={`w-full h-full object-cover transition-opacity duration-1000 ${heroImageLoaded ? 'opacity-100' : 'opacity-0'}`}
-            onLoad={() => setHeroImageLoaded(true)}
-          />
-          {/* Gradient Overlays */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black"></div>
-          <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 via-transparent to-fuchsia-500/10"></div>
-        </div>
+  {/* Hero Background Image */}
+  <div className="absolute inset-0 z-0">
+    <Image
+      src={heroImage?.imageUrl || fallbackHeroImage}
+      alt={heroImage?.alt || "Duets Performance"}
+      fill
+      className="object-cover"
+      priority // This loads the image immediately
+      quality={90}
+    />
+    
+    {/* Gradient Overlays */}
+    <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black"></div>
+    <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 via-transparent to-fuchsia-500/10"></div>
+  </div>
 
         <div className="max-w-5xl mx-auto text-center z-10 relative">
           <div className="mb-8">
