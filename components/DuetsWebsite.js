@@ -607,55 +607,66 @@ View Details <ChevronRight className="w-4 h-4 ml-1" />
 };
 // Contact Form Component with Email Integration
 const ContactForm = () => {
-const [formData, setFormData] = useState({
-name: '',
-email: '',
-message: ''
-});
-const [status, setStatus] = useState({ type: '', message: '' });
-const [isSubmitting, setIsSubmitting] = useState(false);
-const handleChange = (e) => {
-setFormData({
-...formData,
-[e.target.name]: e.target.value
-});
-};
-const handleSubmit = async (e) => {
-e.preventDefault();
-setIsSubmitting(true);
-setStatus({ type: '', message: '' });
-try {
-  const response = await fetch('/api/contact', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(formData),
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    message: ''
   });
+  const [status, setStatus] = useState({ type: '', message: '' });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const data = await response.json();
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
 
-  if (response.ok) {
-    setStatus({ 
-      type: 'success', 
-      message: 'Thank you! Your message has been sent successfully.' 
-    });
-    setFormData({ name: '', email: '', message: '' });
-  } else {
-    setStatus({ 
-      type: 'error', 
-      message: data.error || 'Something went wrong. Please try again.' 
-    });
-  }
-} catch (error) {
-  setStatus({ 
-    type: 'error', 
-    message: 'Failed to send message. Please try again later.' 
-  });
-} finally {
-  setIsSubmitting(false);
-}
-};
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setStatus({ type: '', message: '' });
+
+    console.log('Submitting form data:', formData); // DEBUG
+
+    try {
+      console.log('Sending request to /api/contact'); // DEBUG
+      
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      console.log('Response status:', response.status); // DEBUG
+
+      const data = await response.json();
+      console.log('Response data:', data); // DEBUG
+
+      if (response.ok) {
+        setStatus({ 
+          type: 'success', 
+          message: 'Thank you! Your message has been sent successfully.' 
+        });
+        setFormData({ name: '', email: '', message: '' });
+      } else {
+        setStatus({ 
+          type: 'error', 
+          message: data.error || 'Something went wrong. Please try again.' 
+        });
+      }
+    } catch (error) {
+      console.error('Fetch error:', error); // DEBUG
+      setStatus({ 
+        type: 'error', 
+        message: 'Failed to send message. Please try again later.' 
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 return (
 <div className="relative p-8 md:p-12 bg-gradient-to-br from-gray-900/80 to-black/80 backdrop-blur-sm border border-cyan-500/30 rounded-3xl">
 <div className="space-y-6">

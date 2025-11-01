@@ -26,12 +26,12 @@ export async function POST(request) {
 
     // Send email using Resend
     const data = await resend.emails.send({
-      from: 'Duets Contact Form <duets@the-manchesters.com>', // Will be your verified domain
-      to: [process.env.CONTACT_EMAIL], // Your email address
+      from: 'Duets Contact Form <duets@the-manchesters.com>',
+      to: [process.env.CONTACT_EMAIL],
       replyTo: email,
       subject: `New Contact Form Submission from ${name}`,
       html: `
-      <!DOCTYPE html>
+        <!DOCTYPE html>
         <html>
           <head>
             <style>
@@ -120,7 +120,7 @@ export async function POST(request) {
   } catch (error) {
     console.error('Contact form error:', error);
     return NextResponse.json(
-      { error: 'Failed to send email' },
+      { error: 'Failed to send email', details: error.message },
       { status: 500 }
     );
   }
