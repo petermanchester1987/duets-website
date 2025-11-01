@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image'
-import { Calendar, Music, Users, Star, Sparkles, Mail, Instagram, Facebook, Twitter, ChevronRight, Menu, X } from 'lucide-react';
+import { Calendar, Music, Users, Star, Sparkles, Mail, Instagram, Youtube, ChevronRight, Menu, X } from 'lucide-react';
 
 const DuetsWebsite = ({ 
   heroImage: initialHeroImage, 
@@ -566,13 +566,12 @@ View Details <ChevronRight className="w-4 h-4 ml-1" />
         <p className="text-center text-gray-400 mb-6">Follow us on social media</p>
         <div className="flex justify-center gap-6">
           {[
-            { Icon: Instagram, color: '#E1306C' },
-            { Icon: Facebook, color: '#1877F2' },
-            { Icon: Twitter, color: '#1DA1F2' }
-          ].map(({ Icon, color }, idx) => (
+            { Icon: Instagram, color: '#E1306C', link: "https://www.instagram.com/the.manchesters/" },
+            { Icon: Youtube, color: '#1DA1F2', link: "https://www.youtube.com/@The-Manchesters" }
+          ].map(({ Icon, color, link }, idx) => (
             <a 
               key={idx}
-              href="#"
+              href={link}
               className="group relative w-14 h-14 flex items-center justify-center bg-gray-900/50 border border-cyan-500/20 rounded-full hover:border-cyan-500/50 transition-all duration-300 hover:scale-110"
               style={{
                 boxShadow: `0 0 0 ${color}00`
