@@ -412,7 +412,7 @@ const quotes = [
             {cruiseLines.map((line, idx) => (
               <div 
                 key={idx}
-                className="group relative aspect-square flex items-center justify-center bg-gray-900/50 border border-cyan-500/20 rounded-2xl hover:border-cyan-500/50 transition-all duration-300 hover:scale-110 hover:shadow-2xl cursor-pointer overflow-hidden"
+                className="group relative aspect-square flex items-center justify-center bg-gray-900/50 border border-cyan-500/20 rounded-2xl hover:border-cyan-500/50 transition-all duration-300 hover:scale-110 hover:shadow-2xl overflow-hidden"
                 style={{
                   boxShadow: `0 0 30px ${line.color}20`
                 }}
