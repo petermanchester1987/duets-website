@@ -28,7 +28,7 @@ const DuetsWebsite = ({
   const canvasRef = useRef(null);
   
   // Replace with your actual hero image URL
-  const defaultHeroImage = "https://d3160fehqwenxu.cloudfront.net/duetShow2.jpg";
+  //const defaultHeroImage = "https://d3160fehqwenxu.cloudfront.net/duetShow2.jpg";
   //const heroImageUrl = "https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=1920&q=80";
 
   // const features = [
@@ -287,7 +287,7 @@ const quotes = [
         {/* Hero Background Image */}
         <div className="absolute inset-0 z-0">
           <img 
-            src={heroImage?.imageUrl || defaultHeroImage}
+            src={heroImage?.imageUrl}
             alt={heroImage?.alt || "Duets Performance"}
             className={`w-full h-full object-cover transition-opacity duration-1000 ${heroImageLoaded ? 'opacity-100' : 'opacity-0'}`}
             onLoad={() => setHeroImageLoaded(true)}
