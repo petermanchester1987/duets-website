@@ -53,10 +53,10 @@ const quotes = [
   ];
 
   const cruiseLines = [
-    { name: "P&O", color: "#00205B" },
-    { name: "NCL", color: "#003DA5" },
-    { name: "Windstar", color: "#1B4D89" },
-    { name: "Ponant", color: "#8B4513" },
+    { name: "P&O", color: "#00205B", logo: "/po.svg"},
+    { name: "NCL", color: "#003DA5", logo: "/ncl.svg" },
+    { name: "Windstar", color: "#1B4D89", logo: "/windstar.svg" },
+    { name: "Ponant", color: "#8B4513", logo: "/ponant.svg" },
     { name: "Royal Albert Hall", color: "#00205B" },
     { name: "London Coliseum", color: "#003DA5" },
     { name: "London o2 Arena", color: "#1B4D89" },
@@ -418,7 +418,12 @@ const quotes = [
                 }}
               >
                 <div className="text-3xl font-bold text-gray-500 group-hover:text-white transition-colors z-10">
-                  {line.name}
+                  {line.logo ? (
+                    <img src={line.logo} alt={line.name} className="max-h-50 object-contain" />
+                  ) : (
+                    line.name
+                  )
+                  }
                 </div>
                 <div 
                   className="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity"
