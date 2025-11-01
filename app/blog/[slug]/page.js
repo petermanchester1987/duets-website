@@ -1,6 +1,5 @@
 import { client } from '@/lib/sanity'
 import { PortableText } from '@portabletext/react'
-import Image from 'next/image'
 import Link from 'next/link'
 import { Calendar, ArrowLeft } from 'lucide-react'
 
@@ -24,7 +23,9 @@ async function getPost(slug) {
     slug,
     excerpt,
     publishedAt,
+    headerType,
     "mainImage": mainImage.asset->url,
+    youtubeId,
     body[]{
       ...,
       _type == "image" => {
@@ -49,7 +50,7 @@ function formatDate(dateString) {
 
 // Generate metadata for SEO
 export async function generateMetadata({ params }) {
-  const { slug } = await params // FIXED: Added await here
+  const { slug } = await params
   const post = await getPost(slug)
   
   if (!post) {
@@ -155,7 +156,7 @@ const portableTextComponents = {
 }
 
 export default async function BlogPost({ params }) {
-  const { slug } = await params // FIXED: Added await here
+  const { slug } = await params
   const post = await getPost(slug)
   
   if (!post) {
@@ -188,19 +189,9 @@ export default async function BlogPost({ params }) {
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="relative pt-32 pb-16 px-6">
-        {post.mainImage && (
-          <div className="absolute inset-0 z-0">
-            <div 
-              className="w-full h-full bg-cover bg-center opacity-20"
-              style={{ backgroundImage: `url(${post.mainImage})` }}
-            />
-            <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/80 to-black"></div>
-          </div>
-        )}
-        
-        <div className="max-w-4xl mx-auto relative z-10">
+      {/* Hero Section with Title and Date */}
+      <section className="relative pt-32 pb-8 px-6 bg-gradient-to-b from-black to-gray-900">
+        <div className="max-w-6xl mx-auto">
           <div className="flex items-center gap-2 text-cyan-400 mb-6">
             <Calendar className="w-5 h-5" />
             <time dateTime={post.publishedAt}>{formatDate(post.publishedAt)}</time>
@@ -211,10 +202,37 @@ export default async function BlogPost({ params }) {
           </h1>
           
           {post.excerpt && (
-            <p className="text-xl text-gray-300 leading-relaxed">
+            <p className="text-xl text-gray-300 leading-relaxed max-w-4xl">
               {post.excerpt}
             </p>
           )}
+        </div>
+      </section>
+
+      {/* Featured Media Section - Image or Video */}
+      <section className="relative px-6 pb-16">
+        <div className="max-w-6xl mx-auto">
+          {post.headerType === 'youtube' && post.youtubeId ? (
+            // YouTube Video Header
+            <div className="relative aspect-video rounded-2xl overflow-hidden border border-cyan-500/30 hover:border-cyan-500/50 transition-all duration-300 shadow-2xl shadow-cyan-500/20">
+              <iframe
+                className="w-full h-full"
+                src={`https://www.youtube.com/embed/${post.youtubeId}`}
+                title={post.title}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              ></iframe>
+            </div>
+          ) : post.mainImage ? (
+            // Image Header
+            <div className="relative aspect-video rounded-2xl overflow-hidden border border-cyan-500/30 hover:border-cyan-500/50 transition-all duration-300 shadow-2xl shadow-cyan-500/20">
+              <img
+                src={post.mainImage}
+                alt={post.title}
+                className="w-full h-full object-cover"
+              />
+            </div>
+          ) : null}
         </div>
       </section>
 
