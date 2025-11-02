@@ -260,7 +260,7 @@ const quotes = [
         {mobileMenuOpen && (
           <div className="lg:hidden bg-black/95 backdrop-blur-md border-b border-cyan-500/20 animate-slideDown">
             <div className="px-6 py-6 space-y-4">
-              {['Home', 'Features', 'Shows', 'Blog', 'Calendar'].map(item => (
+              {['Home', 'Features', 'Clients', 'Blog', 'Calendar'].map(item => (
                 <a 
                   key={item} 
                   href={`#${item.toLowerCase()}`} 
