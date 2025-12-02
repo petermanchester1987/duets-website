@@ -28,7 +28,7 @@ const DuetsWebsite = ({
   const canvasRef = useRef(null);
   
   // Replace with your actual hero image URL
-  const fallbackHeroImage = "https://d3160fehqwenxu.cloudfront.net/duetShow2.jpg";
+  //const fallbackHeroImage = "https://d3160fehqwenxu.cloudfront.net/duetShow2.jpg";
   //const heroImageUrl = "https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=1920&q=80";
 
   // const features = [
@@ -287,7 +287,7 @@ const quotes = [
   {/* Hero Background Image */}
   <div className="absolute inset-0 z-0">
     <Image
-      src={heroImage?.imageUrl || fallbackHeroImage}
+      src={heroImage?.imageUrl}
       alt={heroImage?.alt || "Duets Performance"}
       fill
       className="object-cover"
@@ -362,8 +362,18 @@ const quotes = [
                     className="w-full h-full"
                     src={`https://www.youtube.com/embed/${video.youtubeId ? video.youtubeId : 'bXolxgGhb_A'}`}
                     title={video.title}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     allowFullScreen
+                    playsInline={1}
+                    enablejsapi={1}
+                    rel={0}
+                    frameBorder="0"
+                    loading="lazy"
+                    style={{
+                      WebkitOverflowScrolling: 'touch',
+                      position: 'relative',
+                      zIndex: 1
+                    }}
                   ></iframe>
                   {video.description && (
                     <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity">
